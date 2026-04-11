@@ -16,6 +16,7 @@ export default function Placeholder() {
         <Input placeholder="input teste" />
         <Button>button</Button>
       </Box>
+      codigo teste
     </Box>
   );
 }
