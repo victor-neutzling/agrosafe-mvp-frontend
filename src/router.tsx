@@ -1,10 +1,10 @@
 import { createBrowserRouter } from "react-router";
-import Placeholder from "./pages/placeholder";
+import AccessVerification from "./pages/access-verification";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Placeholder />,
+    element: <AccessVerification />,
   },
 ]);
 
