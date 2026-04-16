@@ -1,21 +1,54 @@
+import { useState } from "react";
 import {
-  Autocomplete,
   Box,
   Button,
   FormHelperText,
   FormLabel,
   Input,
-  Table,
   Textarea,
-  Tooltip,
   Typography,
+  Snackbar,
 } from "@mui/joy";
+import FormGroup from "@mui/material/FormGroup";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
 import { PageBase } from "../../components/page-base";
 import { Navbar } from "../../components/navbar";
-import InfoIcon from "@mui/icons-material/InfoOutlineRounded";
-import FormGroup from "@mui/material/FormGroup";
+import { RegisterModal } from "./components/register-modal";
+
+import {
+  type AccessControlForm,
+  AccessControlFormSchema,
+} from "./access-verification.schema";
+import { ACCESS_CONTROL_FORM_DEFAULT_VALUES } from "./access-verification.constants";
+import { CameraFeedPanel } from "./components/camera-feed-panel";
 
 export default function AccessVerification() {
+  const [openRegisterModal, setOpenRegisterModal] = useState(false);
+  const [hasPhoto, setHasPhoto] = useState(false);
+  const [showSnackbar, setShowSnackbar] = useState(false);
+
+  const form = useForm<AccessControlForm>({
+    resolver: zodResolver(AccessControlFormSchema),
+    defaultValues: ACCESS_CONTROL_FORM_DEFAULT_VALUES,
+  });
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = form;
+
+  const onSubmit = (data: AccessControlForm) => {
+    if (!hasPhoto) {
+      setShowSnackbar(true);
+      return;
+    }
+
+    console.log(data);
+  };
+
   return (
     <PageBase>
       <Navbar title="registro" />
@@ -23,192 +56,138 @@ export default function AccessVerification() {
       <Box
         sx={{
           display: "flex",
-          gap: "1rem",
-          px: "1rem",
-          width: "full",
-          alignItems: "flex-start",
+          gap: 2,
+          px: 2,
+          width: "100%",
         }}
       >
         <Box
           sx={{
             display: "flex",
             flexDirection: "column",
-            gap: "1rem",
+            gap: 2,
             width: "50%",
           }}
         >
           <Box
             sx={{
+              bgcolor: "background.surface",
               border: "1px solid",
-              borderColor: "divider",
-              borderRadius: "8px",
+              borderColor: "neutral.300",
+              borderRadius: "12px",
+              boxShadow: "sm",
             }}
           >
             <Box
               sx={{
                 borderBottom: "1px solid",
-                borderColor: "divider",
-                py: "0.5rem",
-                px: "1rem",
+                borderColor: "neutral.200",
+                py: 1,
+                px: 2,
+                bgcolor: "primary.50",
+                borderRadius: "12px 12px 0 0",
               }}
             >
-              <Typography fontWeight="bold">
+              <Typography fontWeight="lg" sx={{ color: "primary.700" }}>
                 Informações do visitante
               </Typography>
             </Box>
 
-            <Box sx={{ p: "1rem", display: "grid", gap: "1rem" }}>
+            <Box sx={{ p: 2, display: "grid", gap: 2 }}>
               <FormGroup>
-                <FormLabel>CPF</FormLabel>
-                <Input placeholder="000.000.000-00" />
-              </FormGroup>
-
-              <FormGroup>
-                <FormLabel>Nome completo</FormLabel>
-                <Input placeholder="insira o nome do visitante" />
-              </FormGroup>
-            </Box>
-          </Box>
-
-          <Box
-            sx={{
-              border: "1px solid",
-              borderColor: "divider",
-              borderRadius: "8px",
-            }}
-          >
-            <Box
-              sx={{
-                borderBottom: "1px solid",
-                borderColor: "divider",
-                py: "0.5rem",
-                px: "1rem",
-              }}
-            >
-              <Typography fontWeight="bold">Cadastro</Typography>
-            </Box>
-
-            <Box sx={{ p: "1rem", display: "grid", gap: "1rem" }}>
-              <FormGroup>
-                <FormLabel>Empresa / motivo da visita</FormLabel>
-                <Input placeholder="insira o nome da empresa" />
-              </FormGroup>
-
-              <FormGroup>
-                <Box sx={{ display: "flex", gap: "4px", alignItems: "center" }}>
-                  <FormLabel>Nível de acesso</FormLabel>
-                  <Tooltip title="placeholder do tooltip explicando sobre os niveis de acesso">
-                    <InfoIcon sx={{ width: "18px" }} />
-                  </Tooltip>
-                </Box>
-
-                <Autocomplete
-                  placeholder="selecione o nivel de acesso"
-                  options={[
-                    { label: "Nível 1", value: 1 },
-                    { label: "Nível 2", value: 2 },
-                    { label: "Nível 3", value: 3 },
-                  ]}
+                <FormLabel sx={{ color: "neutral.700" }}>CPF</FormLabel>
+                <Controller
+                  name="document"
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      placeholder="000.000.000-00"
+                      variant="outlined"
+                      sx={{
+                        bgcolor: "background.surface",
+                      }}
+                    />
+                  )}
                 />
+                {errors.document && (
+                  <FormHelperText sx={{ color: "danger.500" }}>
+                    {errors.document.message}
+                  </FormHelperText>
+                )}
               </FormGroup>
 
               <FormGroup>
-                <FormLabel>Observações</FormLabel>
-                <Textarea minRows={2} />
-                <FormHelperText>(Opcional)</FormHelperText>
+                <FormLabel sx={{ color: "neutral.700" }}>
+                  Motivo da visita
+                </FormLabel>
+                <Controller
+                  name="visitationReason"
+                  control={control}
+                  render={({ field }) => (
+                    <Input {...field} placeholder="insira o motivo da visita" />
+                  )}
+                />
+                {errors.visitationReason && (
+                  <FormHelperText sx={{ color: "danger.500" }}>
+                    {errors.visitationReason.message}
+                  </FormHelperText>
+                )}
+              </FormGroup>
+
+              <FormGroup>
+                <FormLabel sx={{ color: "neutral.700" }}>Observações</FormLabel>
+                <Controller
+                  name="observations"
+                  control={control}
+                  render={({ field }) => <Textarea {...field} minRows={2} />}
+                />
+                <FormHelperText sx={{ color: "neutral.500" }}>
+                  (Opcional)
+                </FormHelperText>
               </FormGroup>
             </Box>
           </Box>
-          <Box
-            sx={{
-              paddingX: "1rem",
-              display: "flex",
-              gap: "1rem",
-              justifyContent: "center",
-            }}
-          >
-            <Button sx={{ width: "full" }}>validar acesso</Button>
-            <Button sx={{ width: "full" }} variant="soft">
-              review manual
+
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <Button
+              sx={{ width: "50%" }}
+              onClick={handleSubmit(onSubmit)}
+              disabled={!hasPhoto}
+              color="primary"
+              variant="solid"
+            >
+              Verificar Acesso
+            </Button>
+
+            <Button
+              sx={{ width: "50%", color: "secondary" }}
+              variant="soft"
+              onClick={() => setOpenRegisterModal(true)}
+            >
+              Cadastro de visitante (temp)
             </Button>
           </Box>
-          <Box
-            sx={{
-              border: "1px solid",
-              borderColor: "divider",
-              borderRadius: "8px",
-            }}
-          >
-            <Box
-              sx={{
-                borderBottom: "1px solid",
-                borderColor: "divider",
-                py: "0.5rem",
-                px: "1rem",
-              }}
-            >
-              <Typography sx={{ fontSize: "1rem" }}>hello world</Typography>
-            </Box>
-            <Box sx={{ p: "1rem", display: "grid", gap: "1rem" }}>
-              <FormGroup>
-                <FormLabel>cnpj</FormLabel>
-                <Input placeholder="placeholer do cnpj" />
-              </FormGroup>
-
-              <FormGroup>
-                <FormLabel>Nome completo</FormLabel>
-                <Input placeholder="insira o nome do visitante" />
-              </FormGroup>
-            </Box>
-          </Box>
         </Box>
 
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            border: "1px solid",
-            borderColor: "divider",
-            borderRadius: "8px",
-            width: "50%",
-          }}
-        >
-          <Box
-            sx={{
-              borderBottom: "1px solid",
-              borderColor: "divider",
-              py: "0.5rem",
-              px: "1rem",
-            }}
-          >
-            <Typography fontWeight="bold">Camera</Typography>
-          </Box>
-
-          <Box
-            sx={{
-              m: "1rem",
-              border: "1px solid",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              height: "300px",
-            }}
-          >
-            feed da camera aqui (placeholder)
-          </Box>
-          <Box
-            sx={{
-              paddingX: "1rem",
-              paddingBottom: "1rem",
-              width: "full",
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
-            <Button sx={{ width: "156px" }}>tirar foto</Button>
-          </Box>
-        </Box>
+        <CameraFeedPanel onCapture={() => setHasPhoto(true)} />
       </Box>
+
+      <RegisterModal
+        open={openRegisterModal}
+        onClose={() => setOpenRegisterModal(false)}
+      />
+
+      <Snackbar
+        open={showSnackbar}
+        autoHideDuration={3000}
+        onClose={() => setShowSnackbar(false)}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        color="warning"
+        variant="soft"
+      >
+        Tire uma foto antes de verificar o acesso.
+      </Snackbar>
     </PageBase>
   );
 }

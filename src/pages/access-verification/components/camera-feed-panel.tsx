@@ -1,0 +1,104 @@
+import { Box, Button, Typography } from "@mui/joy";
+import { useRef, useCallback, useState } from "react";
+import Webcam from "react-webcam";
+
+type CameraFeedPanelProps = {
+  onCapture: () => void;
+};
+
+export function CameraFeedPanel({ onCapture }: CameraFeedPanelProps) {
+  const webcamRef = useRef<Webcam | null>(null);
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
+
+  const capture = useCallback(() => {
+    if (!webcamRef.current) return;
+
+    const screenshot = webcamRef.current.getScreenshot();
+    if (!screenshot) return;
+
+    setImageSrc(screenshot);
+    onCapture();
+
+    const link = document.createElement("a");
+    link.href = screenshot;
+    link.download = `photo-${Date.now()}.jpg`;
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }, [onCapture]);
+
+  const retake = () => {
+    setImageSrc(null);
+  };
+
+  return (
+    <Box
+      sx={{
+        bgcolor: "background.surface",
+        border: "1px solid",
+        borderColor: "neutral.300",
+        borderRadius: "12px",
+        boxShadow: "sm",
+        width: "50%",
+      }}
+    >
+      <Box
+        sx={{
+          borderBottom: "1px solid",
+          borderColor: "neutral.200",
+          py: 1,
+          px: 2,
+          bgcolor: "primary.50",
+          borderRadius: "12px 12px 0 0",
+        }}
+      >
+        <Typography fontWeight="lg" sx={{ color: "primary.700" }}>
+          Camera
+        </Typography>
+      </Box>
+
+      <Box
+        sx={{
+          m: 2,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          bgcolor: "neutral.50",
+          borderRadius: "12px",
+          overflow: "hidden",
+        }}
+      >
+        {imageSrc ? (
+          <img
+            src={imageSrc}
+            alt="Captured"
+            style={{ width: "100%", borderRadius: 8 }}
+          />
+        ) : (
+          <Webcam ref={webcamRef} screenshotFormat="image/jpeg" width="100%" />
+        )}
+      </Box>
+
+      <Box sx={{ display: "flex", justifyContent: "center", gap: 1, pb: 2 }}>
+        {!imageSrc ? (
+          <Button
+            sx={{
+              width: 156,
+              bgcolor: "primary.600",
+              color: "#fff",
+              "&:hover": {
+                bgcolor: "primary.700",
+              },
+            }}
+            onClick={capture}
+          >
+            tirar foto
+          </Button>
+        ) : (
+          <Button onClick={retake}>tirar outra</Button>
+        )}
+      </Box>
+    </Box>
+  );
+}

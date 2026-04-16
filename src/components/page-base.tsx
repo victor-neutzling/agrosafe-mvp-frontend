@@ -12,7 +12,7 @@ export function PageBase({ children }: PageBaseProps) {
         display: "flex",
         flexDirection: "column",
         minHeight: "100dvh",
-        bgcolor: "background.surface",
+        bgcolor: "neutral.100",
       }}
     >
       <Box
@@ -24,10 +24,10 @@ export function PageBase({ children }: PageBaseProps) {
           flexDirection: "column",
           flexGrow: 1,
           gap: 2,
-          bgcolor: "background.body",
+          bgcolor: "background.surface",
           borderLeft: "1px solid",
           borderRight: "1px solid",
-          borderColor: "divider",
+          borderColor: "neutral.300",
         }}
       >
         {children}
