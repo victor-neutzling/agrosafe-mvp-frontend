@@ -54,7 +54,7 @@ export function CameraFeedPanel({ onCapture }: CameraFeedPanelProps) {
         }}
       >
         <Typography fontWeight="lg" sx={{ color: "primary.700" }}>
-          Camera
+          Câmera
         </Typography>
       </Box>
 
