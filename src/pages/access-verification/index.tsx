@@ -45,7 +45,7 @@ export default function AccessVerification() {
       setShowSnackbar(true);
       return;
     }
-
+    alert("acesso verificado (alerta temporário)");
     console.log(data);
   };
 
