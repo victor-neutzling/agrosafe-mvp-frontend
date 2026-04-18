@@ -1,5 +1,5 @@
 import Login from "./pages/login";
-import Register from "./pages/cadastro";
+import Register from "./pages/register";
 import { createBrowserRouter } from "react-router";
 import AccessVerification from "./pages/access-verification";
 
@@ -9,12 +9,11 @@ const router = createBrowserRouter([
     element: <Login />,
   },
   {
-    path: "/cadastro", 
+    path: "/cadastro",
     element: <Register />,
-
   },
   {
-    path: "/access-verify",
+    path: "/access-verification",
     element: <AccessVerification />,
   },
 ]);
