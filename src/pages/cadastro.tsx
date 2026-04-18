@@ -1,4 +1,3 @@
-import { CssVarsProvider } from '@mui/joy/styles';
 import Sheet from '@mui/joy/Sheet';
 import Typography from '@mui/joy/Typography';
 import FormControl from '@mui/joy/FormControl';
@@ -27,7 +26,6 @@ export default function Cadastro() {
   };
 
   return (
-    <CssVarsProvider>
       <Box
         sx={{
           display: 'flex',
@@ -134,6 +132,5 @@ export default function Cadastro() {
           </Typography>
         </Sheet>
       </Box>
-    </CssVarsProvider>
   );
 }

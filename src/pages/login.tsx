@@ -1,4 +1,3 @@
-import { CssVarsProvider } from '@mui/joy/styles';
 import Sheet from '@mui/joy/Sheet';
 import Typography from '@mui/joy/Typography';
 import FormControl from '@mui/joy/FormControl';
@@ -17,7 +16,6 @@ export default function Login() {
   };
 
   return (
-    <CssVarsProvider>
       <Box
         sx={{
           display: 'flex',
@@ -90,6 +88,5 @@ export default function Login() {
           </Typography>
         </Sheet>
       </Box>
-    </CssVarsProvider>
   );
 }
