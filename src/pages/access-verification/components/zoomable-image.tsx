@@ -1,4 +1,7 @@
-function ZoomableImage({ title, src }: { title: string; src?: string }) {
+import { Box, Typography } from "@mui/joy";
+import { useState } from "react";
+
+export function ZoomableImage({ title, src }: { title: string; src?: string }) {
   const [transformOrigin, setTransformOrigin] = useState("center");
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
