@@ -1,6 +1,7 @@
 import { Box, Button, Typography } from "@mui/joy";
-import { useRef, useCallback, useState } from "react";
+import { useRef, useCallback } from "react";
 import Webcam from "react-webcam";
+import { useTempImageStore } from "../../../stores/use-temp-image-store";
 
 type CameraFeedPanelProps = {
   onCapture: () => void;
@@ -8,7 +9,8 @@ type CameraFeedPanelProps = {
 
 export function CameraFeedPanel({ onCapture }: CameraFeedPanelProps) {
   const webcamRef = useRef<Webcam | null>(null);
-  const [imageSrc, setImageSrc] = useState<string | null>(null);
+
+  const { setImageSrc, imageSrc } = useTempImageStore();
 
   const capture = useCallback(() => {
     if (!webcamRef.current) return;
@@ -26,10 +28,10 @@ export function CameraFeedPanel({ onCapture }: CameraFeedPanelProps) {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  }, [onCapture]);
+  }, [onCapture, setImageSrc]);
 
   const retake = () => {
-    setImageSrc(null);
+    setImageSrc("");
   };
 
   return (

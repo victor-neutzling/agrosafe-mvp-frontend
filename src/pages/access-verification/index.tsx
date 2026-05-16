@@ -16,6 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { PageBase } from "../../components/page-base";
 import { Navbar } from "../../components/navbar";
 import { RegisterModal } from "./components/register-modal";
+import { ManualVerificationModal } from "./components/manual-verification-modal";
 
 import {
   type AccessControlForm,
@@ -26,6 +27,7 @@ import { CameraFeedPanel } from "./components/camera-feed-panel";
 
 export default function AccessVerification() {
   const [openRegisterModal, setOpenRegisterModal] = useState(false);
+  const [openManualModal, setOpenManualModal] = useState(false);
   const [hasPhoto, setHasPhoto] = useState(false);
   const [showSnackbar, setShowSnackbar] = useState(false);
 
@@ -167,6 +169,16 @@ export default function AccessVerification() {
             >
               Cadastro de visitante (temp)
             </Button>
+
+            {hasPhoto && (
+              <Button
+                sx={{ flex: 1 }}
+                variant="outlined"
+                onClick={() => setOpenManualModal(true)}
+              >
+                verificação manual (temp)
+              </Button>
+            )}
           </Box>
         </Box>
 
@@ -176,6 +188,16 @@ export default function AccessVerification() {
       <RegisterModal
         open={openRegisterModal}
         onClose={() => setOpenRegisterModal(false)}
+      />
+      <ManualVerificationModal
+        open={openManualModal}
+        onClose={() => setOpenManualModal(false)}
+        onApprove={() => {
+          alert("acesso validado manualmente (temp)");
+        }}
+        onDeny={() => {
+          alert("acesso negado manualmente (temp)");
+        }}
       />
 
       <Snackbar
